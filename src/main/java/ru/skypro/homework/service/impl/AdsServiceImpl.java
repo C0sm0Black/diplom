@@ -169,9 +169,4 @@ public class AdsServiceImpl implements AdsService {
 
     }
 
-    @Override
-    public Optional<Ad> getAdById(Long id) {
-        return adsRepository.findById(id);
-    }
-
 }
