@@ -29,6 +29,7 @@ public class AdsServiceImpl implements AdsService {
     private final UserService userService;
     private final ImageService imageService;
 
+
     @Override
     public AdsDto createAd(String userLogin, MultipartFile multipartFile, CreateOrUpdateAd createAd) {
 

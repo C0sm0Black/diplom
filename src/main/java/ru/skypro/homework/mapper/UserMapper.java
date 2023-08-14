@@ -14,7 +14,7 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(target = "role",  source = "role")
+    @Mapping(target = "role", source = "role")
     @Mapping(target = "image", source = "image", qualifiedByName = "imageMapping")
     UserDto userToDto(User user);
 
@@ -34,7 +34,7 @@ public interface UserMapper {
         if (image == null) {
             return null;
         }
-        return  "/images/" + image.getFileName();
+        return "/images/" + image.getFileName();
 
     }
 
