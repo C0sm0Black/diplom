@@ -8,7 +8,6 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.Register;
-import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
 
@@ -69,14 +68,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         ru.skypro.homework.entity.User user = optionalUser.get();
-
         user.setPassword(encoder.encode(newPassword.getNewPassword()));
-        Role role = user.getRole();
 
         manager.updateUser(User.builder()
                 .password(user.getPassword())
                 .username(user.getEmail())
-                .roles(role.name())
+                .roles(user.getRole().name())
                 .build());
 
         userService.updatePassword(user);

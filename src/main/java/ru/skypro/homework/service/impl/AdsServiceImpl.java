@@ -1,6 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdsDto;
@@ -86,7 +87,8 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public boolean deleteByIdAd(String userLogin, Long id) {
+    @PreAuthorize("hasRole('ADMIN') or @permissionCheckServiceImpl.checkAdsUserName(#userLogin, #idAd)")
+    public boolean deleteByIdAd(String userLogin, Long idAd) {
 
         Optional<User> optionalUser = userService.getUserByLogin(userLogin);
 
@@ -94,11 +96,11 @@ public class AdsServiceImpl implements AdsService {
             return false;
         }
 
-        if (!adsRepository.existsById(id)) {
+        if (!adsRepository.existsById(idAd)) {
             return false;
         } else {
 
-            adsRepository.deleteById(id);
+            adsRepository.deleteById(idAd);
             return true;
 
         }
@@ -106,9 +108,10 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Optional<AdsDto> updateAd(Long id, CreateOrUpdateAd updateAd) {
+    @PreAuthorize("hasRole('ADMIN') or @permissionCheckServiceImpl.checkAdsUserName(#userLogin, #idAd)")
+    public Optional<AdsDto> updateAd(String userLogin, Long idAd, CreateOrUpdateAd updateAd) {
 
-        Optional<Ad> optionalAd = adsRepository.findById(id);
+        Optional<Ad> optionalAd = adsRepository.findById(idAd);
 
         if (optionalAd.isEmpty()) {
             return Optional.empty();
@@ -144,6 +147,7 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or @permissionCheckServiceImpl.checkAdsUserName(authenticated.name, #idAd)")
     public Optional<String> changeImage(Long idAd, MultipartFile multipartFile) {
 
         Optional<Ad> optionalAd = adsRepository.findById(idAd);

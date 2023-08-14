@@ -18,7 +18,7 @@ public interface AdsService {
 
     boolean deleteByIdAd(String userLogin, Long id);
 
-    Optional<AdsDto> updateAd(Long id, CreateOrUpdateAd updateAd);
+    Optional<AdsDto> updateAd(String userLogin, Long id, CreateOrUpdateAd updateAd);
 
     List<AdsDto> getMyAds(String userLogin);
 

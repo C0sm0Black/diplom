@@ -50,6 +50,7 @@ public class AdController {
 
     }
 
+
     @DeleteMapping("{id}")
     public ResponseEntity<?> removeAd(@PathVariable("id") Long id) {
 
@@ -68,7 +69,10 @@ public class AdController {
     public ResponseEntity<AdsDto> updateAds(@PathVariable("id") Long id,
                                             @RequestBody CreateOrUpdateAd updateAd) {
 
-        Optional<AdsDto> optionalAdsDto = adsService.updateAd(id, updateAd);
+        Optional<AdsDto> optionalAdsDto = adsService.updateAd(SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName(),id, updateAd);
 
         return optionalAdsDto.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());

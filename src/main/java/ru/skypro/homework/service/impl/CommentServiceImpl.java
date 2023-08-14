@@ -1,6 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
@@ -70,40 +71,31 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or @permissionCheckServiceImpl.checkCommentUserName(#userLogin, #commentId)")
     public boolean deleteById(String userLogin, Long adId, Long commentId) {
 
-        Optional<User> optionalUser = userService.getUserByLogin(userLogin);
-
-        if (optionalUser.isEmpty()) {
-            return false;
-        }
 
         if (!adsRepository.existsById(adId)) {
             return false;
         }
 
-        if (commentsRepository.existsById(commentId)) {
+        Optional<Comment> optionalComment = commentsRepository.findById(commentId);
 
-            commentsRepository.deleteById(commentId);
-            return true;
-
-        } else {
+        if (optionalComment.isEmpty()) {
             return false;
         }
+
+        commentsRepository.deleteById(commentId);
+        return true;
 
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN') or @permissionCheckServiceImpl.checkCommentUserName(#userLogin, #commentId)")
     public Optional<CommentDto> editComment(String userLogin,
                                             Long adId,
                                             Long commentId,
                                             CreateOrUpdateComment updateComment) {
-
-        Optional<User> optionalUser = userService.getUserByLogin(userLogin);
-
-        if (optionalUser.isEmpty()) {
-            return Optional.empty();
-        }
 
         if (!adsRepository.existsById(adId)) {
             return Optional.empty();

@@ -35,18 +35,14 @@ public class UserServiceImpl implements UserService {
         List<UserDetails> userDetails = new ArrayList<>();
         List<User> users = usersRepository.findAll();
 
-        users.forEach(user -> {
-
-            userDetails.add(org.springframework.security.core.userdetails.User.builder()
-                    .username(user.getEmail())
-                    .password(user.getPassword())
-                    .roles(user.getRole().name())
-                    .build());
-
-        });
-
+        users.forEach(user -> userDetails.add(org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build()));
 
         return userDetails;
+
     }
 
     @Override

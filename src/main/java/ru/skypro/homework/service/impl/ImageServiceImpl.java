@@ -104,7 +104,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private String getExtension(String fileName) {
-        return fileName.substring(fileName.indexOf(".") + 1);
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
 }
