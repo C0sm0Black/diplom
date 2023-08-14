@@ -1,5 +1,12 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,11 +26,22 @@ import java.util.Optional;
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/users")
 @AllArgsConstructor
+@Tag(name = "Пользователи", description = "UserController")
 public class UserController {
 
     private final UserService userService;
     private final AuthService authService;
 
+
+    @Operation(summary = "Обновление пароля", operationId = "setPassword")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "OK"),
+            @ApiResponse(responseCode = "401",
+                    description = "Unauthorized"),
+            @ApiResponse(responseCode = "403",
+                    description = "Forbidden")
+    })
     @PostMapping("set_password")
     public ResponseEntity<?> setPassword(@RequestBody NewPassword newPassword) {
 
@@ -38,6 +56,15 @@ public class UserController {
 
     }
 
+    @Operation(summary = "Получение информации об авторизованном пользователе", operationId = "getUser")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = UserDto.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "Unauthorized")
+    })
     @GetMapping("/me")
     public ResponseEntity<UserDto> getUser() {
 
@@ -51,6 +78,15 @@ public class UserController {
 
     }
 
+    @Operation(summary = "Обновление информации об авторизованном пользователе", operationId = "updateUser")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = UserUpdate.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "Unauthorized")
+    })
     @PatchMapping("/me")
     public ResponseEntity<UserUpdate> updateUser(@RequestBody UserUpdate userUpdate) {
 
@@ -64,6 +100,15 @@ public class UserController {
 
     }
 
+    @Operation(summary = "Обновление аватара авторизованного пользователя", operationId = "updateUserImage")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = String.class)))),
+            @ApiResponse(responseCode = "401",
+                    description = "Unauthorized")
+    })
     @PatchMapping(value = "me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateUserImage(@RequestPart MultipartFile image) {
 
